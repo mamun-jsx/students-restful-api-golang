@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/mamun-jsx/students-restful-api-golang/internal/config"
+	"github.com/mamun-jsx/students-restful-api-golang/internal/student"
 )
 
 func main() {
@@ -21,9 +22,7 @@ func main() {
 
 	// TODO setup router
 	router := http.NewServeMux()
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome to students api"))
-	})
+	router.HandleFunc("POST /students", student.New())
 
 	fmt.Println("welcome to student api")
 
@@ -55,3 +54,5 @@ func main() {
 	slog.Info("server gracefully stopped")
 
 }
+
+// 7h: 38m
