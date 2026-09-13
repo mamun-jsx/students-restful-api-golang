@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+
 	"fmt"
 	"log"
 	"log/slog"
@@ -13,13 +14,19 @@ import (
 
 	"github.com/mamun-jsx/students-restful-api-golang/internal/config"
 	"github.com/mamun-jsx/students-restful-api-golang/internal/student"
+	"github.com/mamun-jsx/students-restful-api-golang/storage/sqlite"
 )
 
 func main() {
 	// TODO: load config
 	cfg := config.MustLoad()
 	// TODO database setup
-
+	_, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	slog.Info("storage initialized", slog.String("path", cfg.StoragePath))
+	
 	// TODO setup router
 	router := http.NewServeMux()
 	router.HandleFunc("POST /students", student.New())
@@ -47,12 +54,10 @@ func main() {
 	ctx, cancle := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancle()
 
-	err := server.Shutdown(ctx)
+	err = server.Shutdown(ctx)
 	if err != nil {
 		slog.Error("Failed to shutdown server ", slog.String("error", err.Error()))
 	}
 	slog.Info("server gracefully stopped")
 
 }
-
-// 7h: 38m
